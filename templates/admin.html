@@ -1,0 +1,102 @@
+<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
+
+<section class=section>
+	<h1 class=title>PBZ.URL Admin Interface</h1>
+	<h2 class=subtitle>View stored URLs and decide which ones to keep or discard.</h1>
+</section>
+
+
+<section class=section style="overflow-x: auto">
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Log Entry</th>
+				<th>Port</th>
+				<th>One</th>
+				<th>Two</th>
+				<th>Classification</th>
+			</tr>
+		</thead>
+		<tfoot>
+			<tr>
+				<th>Log Entry</th>
+				<th>Port</th>
+				<th>One</th>
+				<th>Two</th>
+				<th>Classification</th>
+			</tr>
+		</tfoot>
+		<tbody>
+			<tr>
+				<th>https://www.google.com/var/log/messages</th>
+				<td>
+					<div class="tags has-addons">
+						<span class="tag is-dark">RDP</span>
+						<span class="tag is-danger">3389</span>
+					</div>
+				</td>
+				<td>1</td>
+				<td>2</td>
+				<td>
+					<span class="icon has-text-warning">
+						<i class="fas fa-exclamation-triangle"></i>
+					</span>
+				</td>
+			</tr>
+
+			<tr>
+				<th>/var/log/asdf</th>
+				<td>
+					<div class="tags has-addons">
+						<span class="tag is-dark">HTTPS</span>
+						<span class="tag is-primary">443</span>
+					</div>
+				</td>
+				<td>1</td>
+				<td>2</td>
+				<td>
+					<span class="icon has-text-primary">
+						<i class="fas fa-check-square"></i>
+					</span>
+				</td>
+			</tr>
+
+			<tr>
+				<th>/var/log/some-file.txt</th>
+				<td>
+					<div class="tags has-addons">
+						<span class="tag is-dark"></span>
+						<span class="tag is-info">65535</span>
+					</div>
+				</td>
+				<td>1</td>
+				<td>2</td>
+				<td>
+					<span class="icon has-text-danger">
+						<i class="fas fa-ban"></i>
+					</span>
+				</td>
+			</tr>
+
+			<tr>
+				<th>/etc/hosts</th>
+				<td>
+					<div class="tags has-addons">
+						<span class="tag is-dark">HTTP</span>
+						<span class="tag is-warning">80</span>
+					</div>
+				</td>
+				<td>1</td>
+				<td>2</td>
+				<td>
+					<span class="icon has-text-info">
+						<i class="fas fa-info-circle"></i>
+					</span>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+</section>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang=en>
+	<head>
+		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
+		<title>url.pebaz.com</title>
+
+		<!-- Scrollbar Style -->
+		<style>
+			::-webkit-scrollbar { width: 10px; }
+			::-webkit-scrollbar-track { background: #f1f1f1; }
+			::-webkit-scrollbar-thumb { background: #888; }
+			::-webkit-scrollbar-thumb:hover { background: #555; }
+		</style>
+
+		<script>
+			function shorten()
+			{
+				var shortenedUrl = document.getElementById("the-url");
+				//console.log(shortenedUrl.value);
+
+				//shortenedUrl.classList.remove("is-primary", "is-info");
+				//shortenedUrl.classList.add("is-danger");
+
+				// IF RIGHT:
+				//shortenedUrl.classList.remove("is-danger", "is-primary");
+				//shortenedUrl.classList.add("is-info");
+
+				fetch("/", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					redirect: "follow",
+					body: JSON.stringify({
+						"the-url": shortenedUrl.value
+					})
+				}).then(response => {
+					// If ok, add check icon!
+
+					response.text().then(function (text) {
+						console.log(text.result);
+						var result = JSON.parse(text);
+						console.log(result);
+
+						if (result.result === "ok")
+						{
+							shortenedUrl.classList.remove("is-danger", "is-info");
+							shortenedUrl.classList.add("is-primary");
+							document.getElementById("done-icon").style.display = "block";
+
+							console.log(result.urlid);
+							shortenedUrl.value = "http://url.pebaz.com/" + result.urlid;
+						}
+					});					
+				});
+			}
+
+			function copy()
+			{
+				var shortenedUrl = document.getElementById("the-url");
+				shortenedUrl.select();
+				document.execCommand("copy");
+			}
+		</script>
+	</head>
+	<body>
+		<section class=section>
+				<h1 class=title>Shorten URL</h1>
+				<h2 class=subtitle>
+					Enter the URL to shorten and get back a smaller version you can use instead.
+				</h2>
+		</section>
+
+		<section>
+			<div class="columns is-mobile">
+				<div class="column">
+					<div class=level>
+						<span id=done-icon class="icon has-text-primary" style="display: none">
+							<i class="fas fa-check-square"></i>
+						</span>
+						<input id=the-url class="input is-info" type=url placeholder=http://super.long.url>
+					</div>
+				</div>
+				<div class="column">
+					<a onclick="shorten()" class="button is-primary">Shorten</a>
+					<a onclick="copy()" class="button">Copy</a>
+					<a onclick="clear()" class="button is-warning">Clear</a>
+				</div>
+			</div>
+		</section>
+	</body>
+</html>
