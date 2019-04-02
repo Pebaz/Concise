@@ -1,5 +1,5 @@
 """
-[ ] Rename project
+[✔] Rename project
 [ ] Deploy on Zeit
 [ ] Map url.pebaz.com wildcard domain to Zeit
 [✔] Generate new ID for URL
@@ -11,6 +11,7 @@
 import os
 import requests
 from flask import Flask, redirect, render_template, request, abort
+#import bjoern
 
 app = Flask(__name__)
 DATABASE_URL = "https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af"
@@ -21,6 +22,8 @@ def shorten_url():
 	"""
 	Index page to turn a URL into a smaller URL.
 	"""
+
+	print('[CONCISE][shorten_url()]')
 
 	if request.method == 'GET':
 		return render_template('index.html')
@@ -53,11 +56,14 @@ def get_url(id):
 
 	POST a new URL to shorten.
 	"""
+	print('[CONCISE][get_url()]')
+
 	try:
 		url = requests.get(f'{DATABASE_URL}/urls/{id}').json()['result']['value']
 		print(f'REDIRECTING TO: {url}')
 		return redirect(url, code=302)
-	except:
+	except Exception as e:
+		print(e)
 		abort(404)
 	
 		
@@ -68,5 +74,7 @@ def get_url(id):
 
 if __name__ == '__main__':
 	# Bind to PORT if defined, otherwise default to 5000.
-	port = int(os.environ.get('PORT', 9000))
+	port = int(os.environ.get('PORT', 9001))
 	app.run(host='0.0.0.0', port=port)
+	#print(f'Serving on: 0.0.0.0:{port}')
+	#bjoern.run(app, host='0.0.0.0', port=port)

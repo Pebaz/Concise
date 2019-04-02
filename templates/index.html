@@ -3,7 +3,7 @@
 	<head>
 		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
 		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
-		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
+		<link rel=stylesheet href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
 		<title>url.pebaz.com</title>
 
 		<!-- Scrollbar Style -->
@@ -15,17 +15,37 @@
 		</style>
 
 		<script>
+			function matchExact(r, str)
+			{
+				var match = str.match(r);
+				var result = match && str === match[0];
+				return (result != undefined) && result;
+			}
+
 			function shorten()
 			{
 				var shortenedUrl = document.getElementById("the-url");
-				//console.log(shortenedUrl.value);
 
-				//shortenedUrl.classList.remove("is-primary", "is-info");
-				//shortenedUrl.classList.add("is-danger");
+				var isValid = matchExact(
+					/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+					shortenedUrl.value
+				);
 
-				// IF RIGHT:
-				//shortenedUrl.classList.remove("is-danger", "is-primary");
-				//shortenedUrl.classList.add("is-info");
+				if (!isValid)
+				{
+					shortenedUrl.classList.remove("is-primary");
+					shortenedUrl.classList.add("is-danger");
+					document.getElementById("error-icon").style.display = "inline-flex";
+					return;
+				}
+				else
+				{
+					shortenedUrl.classList.remove("is-danger");
+					document.getElementById("error-icon").style.display = "none";
+				}
+				
+				var shortButton = document.getElementById("shorten");
+				shortButton.classList.add("is-loading");
 
 				fetch("/", {
 					method: "POST",
@@ -37,23 +57,20 @@
 						"the-url": shortenedUrl.value
 					})
 				}).then(response => {
-					// If ok, add check icon!
-
 					response.text().then(function (text) {
-						console.log(text.result);
 						var result = JSON.parse(text);
-						console.log(result);
 
 						if (result.result === "ok")
 						{
 							shortenedUrl.classList.remove("is-danger", "is-info");
 							shortenedUrl.classList.add("is-primary");
-							document.getElementById("done-icon").style.display = "block";
+							document.getElementById("done-icon").style.display = "inline-flex";
 
-							console.log(result.urlid);
 							shortenedUrl.value = "http://url.pebaz.com/" + result.urlid;
 						}
-					});					
+
+						shortButton.classList.remove("is-loading");
+					});
 				});
 			}
 
@@ -63,30 +80,57 @@
 				shortenedUrl.select();
 				document.execCommand("copy");
 			}
+
+			function clearURL()
+			{
+				var shortenedUrl = document.getElementById("the-url");
+				shortenedUrl.value = "";
+				document.getElementById("done-icon").style.display = "none";
+				document.getElementById("error-icon").style.display = "none";
+				shortenedUrl.classList.remove("is-primary");
+			}
 		</script>
 	</head>
 	<body>
 		<section class=section>
+				
+		</section>
+
+		<section class=section>
+			<div class=container>
 				<h1 class=title>Shorten URL</h1>
+			</div>
+			<div class=container>
 				<h2 class=subtitle>
 					Enter the URL to shorten and get back a smaller version you can use instead.
 				</h2>
+			</div>
 		</section>
 
 		<section>
-			<div class="columns is-mobile">
-				<div class="column">
-					<div class=level>
-						<span id=done-icon class="icon has-text-primary" style="display: none">
-							<i class="fas fa-check-square"></i>
-						</span>
-						<input id=the-url class="input is-info" type=url placeholder=http://super.long.url>
+			<div class=container>
+				<div class="columns is-multiline">
+					<div class="column">
+						<div class=field>
+							<div class="control has-icons-right">
+								<input id=the-url class="input" type=text placeholder=http://super.long.url>
+								<span id=done-icon class="icon is-small is-right has-text-success" style="display: none">
+									<!-- <i class="fas fa-spinner fa-pulse"></i> -->
+									<i class="fas fa-check-square"></i>
+								</span>
+
+								<span id=error-icon class="icon is-small is-right has-text-danger" style="display: none">
+									<!-- <i class="fas fa-spinner fa-pulse"></i> -->
+									<i class="fas fa-ban"></i>
+								</span>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div class="column">
-					<a onclick="shorten()" class="button is-primary">Shorten</a>
-					<a onclick="copy()" class="button">Copy</a>
-					<a onclick="clear()" class="button is-warning">Clear</a>
+					<div class="column">
+						<a id=shorten onclick="shorten()" class="button is-primary">Shorten</a>
+						<a onclick="copy()" class="button">Copy</a>
+						<a onclick="clearURL()" class="button is-warning">Clear</a>
+					</div>
 				</div>
 			</div>
 		</section>
