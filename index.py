@@ -8,13 +8,16 @@
 [✔] Allow redirecting using IDs
 """
 
-import os
+import sys, os, time
 import requests
 from flask import Flask, redirect, render_template, request, abort
-#import bjoern
+
+ctm = lambda: int(round(time.time() * 1000))
+
 
 app = Flask(__name__)
 DATABASE_URL = "https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af"
+cached_urls = dict()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -59,7 +62,16 @@ def get_url(id):
 	print('[CONCISE][get_url()]')
 
 	try:
-		url = requests.get(f'{DATABASE_URL}/urls/{id}').json()['result']['value']
+		start = ctm()
+
+		if id in cached_urls:
+			url = cached_urls[id]
+		else:
+			url = requests.get(f'{DATABASE_URL}/urls/{id}').json()['result']['value']
+			cached_urls[id] = url
+
+		print(f'Delay: {ctm() - start} ms')
+
 		print(f'REDIRECTING TO: {url}')
 		return redirect(url, code=302)
 	except Exception as e:
@@ -67,14 +79,32 @@ def get_url(id):
 		abort(404)
 	
 		
-		
+@app.route('/admin')
+def admin_page():
+	"""
+	GET a previously-shortened URL by ID.
 
+	POST a new URL to shorten.
+	"""
+	print('[CONCISE][admin_page()]')
+
+	try:
+		json = requests.get(f'{DATABASE_URL}/urls').json()['result']
+		json = { i : json[i]['value'] for i in json }
+		print(json)
+		return render_template('admin.html', json=json)
+	except Exception as e:
+		print(e)
+		abort(404)
 		
 
 
 if __name__ == '__main__':
 	# Bind to PORT if defined, otherwise default to 5000.
-	port = int(os.environ.get('PORT', 9001))
-	app.run(host='0.0.0.0', port=port)
-	#print(f'Serving on: 0.0.0.0:{port}')
-	#bjoern.run(app, host='0.0.0.0', port=port)
+	if sys.platform == 'win32':
+		port = int(os.environ.get('PORT', 9001))
+		app.run(host='0.0.0.0', port=port)
+	else:
+		print(f'Serving on: 0.0.0.0:{port}')
+		import bjoern
+		bjoern.run(app, host='0.0.0.0', port=port)
