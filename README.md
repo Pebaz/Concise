@@ -12,3 +12,9 @@ An URL-shortener built using:
 
   
 
+## Heroku App Name
+
+```
+https://pbz-url.herokuapp.com
+```
+
