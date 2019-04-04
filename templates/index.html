@@ -4,7 +4,7 @@
 		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
 		<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
 		<link rel=stylesheet href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
-		<title>url.pebaz.com</title>
+		<title>URL Shortener</title>
 
 		<!-- Scrollbar Style -->
 		<style>
@@ -66,7 +66,7 @@
 							shortenedUrl.classList.add("is-primary");
 							document.getElementById("done-icon").style.display = "inline-flex";
 
-							shortenedUrl.value = "http://url.pebaz.com/" + result.urlid;
+							shortenedUrl.value = "https://pbz-url.herokuapp.com/" + result.urlid;
 						}
 
 						shortButton.classList.remove("is-loading");
@@ -89,11 +89,28 @@
 				document.getElementById("error-icon").style.display = "none";
 				shortenedUrl.classList.remove("is-primary");
 			}
+
+			function checkAdmin()
+			{
+				if (document.cookie.split(';')[0] === 'PBZ-ADMIN')
+				{
+					document.getElementById('admin-icon').style.display = 'inline-flex';
+				}
+			}
 		</script>
 	</head>
-	<body>
+	<body onload="checkAdmin()">
 		<section class=section>
-				
+			<div class=level>
+				<div class=level-left></div>
+				<div class=level-right>
+					<div class=level-item>
+						<span id=admin-icon class="icon" style="display: none" onmouseenter="this.classList.add('has-text-link')" onmouseleave="this.classList.remove('has-text-link')">
+							<i class="fas fa-cog" onclick="window.location=('admin')"></i>
+						</span>
+					</div>
+				</div>
+			</div>
 		</section>
 
 		<section class=section>

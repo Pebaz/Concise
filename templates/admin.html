@@ -5,12 +5,16 @@
 <script>
 	function deleteSelected()
 	{
-		document.getElementById('delete-button').classList.add('is-loading');
 		var cbs = document.getElementsByName('delete-me');
+		var delBtn = document.getElementById('delete-button');
+
 		for (var i = 0; i < cbs.length; i++)
 		{
 			if (cbs[i].checked)
 			{
+				// Show loading spinner
+				delBtn.classList.add('is-loading');
+				
 				var id = cbs[i].value;
 
 				fetch("https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af/urls/" + id, {
@@ -25,12 +29,26 @@
 			}
 		}
 	}
+
+	function registerAsAdmin()
+	{
+		document.cookie = 'PBZ-ADMIN; expires=Wed, 1 Jan 2025 12:00:00 UTC';
+	}
 </script>
 
 <section class=section>
-	<h1 class=title>PBZ.URL Admin Interface</h1>
+	<h1 class=title>PBZ-URL Admin Interface</h1>
 	<h2 class=subtitle>View stored URLs and decide which ones to keep or discard.</h1>
-
+	<button
+		class=button
+		onmouseenter="this.classList.add('has-text-link')"
+		onmouseleave="this.classList.remove('has-text-link')"
+		onclick="window.location=('/')">
+		<span class="icon is-small" >
+			<i class="fas fa-arrow-left"></i>
+		</span>
+	</button>
+	<button class="button" onclick="registerAsAdmin()">Register Computer As Admin</button>
 	<button class="button is-warning" onclick="deleteSelected()" id=delete-button>Delete Selected</button>
 </section>
 
@@ -61,3 +79,11 @@
 		</tbody>
 	</table>
 </section>
+
+<footer class=footer>
+	<div class="content has-text-centered">
+		<p class=has-text-danger>
+			<small>This page uses cookies. By continuing to use this page, you are agreeing to the use of cookies.</small>
+		</p>
+	</div>
+</footer>
