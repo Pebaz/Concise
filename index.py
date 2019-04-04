@@ -26,6 +26,8 @@ def shorten_url():
 	Index page to turn a URL into a smaller URL.
 	"""
 
+	return "<h1>Hello World</h1>"
+
 	print('[CONCISE][shorten_url()]')
 
 	if request.method == 'GET':
