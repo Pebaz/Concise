@@ -102,13 +102,12 @@ def admin_page():
 
 
 if __name__ == '__main__':
-	# Bind to PORT if defined, otherwise default to 5000.
-	# if sys.platform == 'win32':
-	# 	port = int(os.environ.get('PORT', 9001))
-	# 	app.run(host='0.0.0.0', port=port)
-	# else:
-	# 	print(f'Serving on: 0.0.0.0:{port}')
-	# 	import bjoern
-	# 	bjoern.run(app, host='0.0.0.0', port=port)
+	port = int(os.environ.get('PORT', 9001))
 
-	app.run(host='0.0.0.0', port=int(os.environ['PORT']))
+	if sys.platform == 'win32':
+		app.run(host='0.0.0.0', port=port)
+	else:
+		import bjoern
+		bjoern.run(app, host='0.0.0.0', port=port)
+
+	#app.run(host='0.0.0.0', port=int(os.environ['PORT']))
