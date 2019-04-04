@@ -1,89 +1,123 @@
-<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
-<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
+<head>
+	<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css" />
+	<link rel=stylesheet href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" crossorigin="anonymous">
 
-<script>
-	function deleteSelected()
-	{
-		var cbs = document.getElementsByName('delete-me');
-		var delBtn = document.getElementById('delete-button');
-
-		for (var i = 0; i < cbs.length; i++)
+	<script>
+		function deleteSelected()
 		{
-			if (cbs[i].checked)
-			{
-				// Show loading spinner
-				delBtn.classList.add('is-loading');
-				
-				var id = cbs[i].value;
+			var cbs = document.getElementsByName('delete-me');
+			var delBtn = document.getElementById('delete-button');
 
-				fetch("https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af/urls/" + id, {
-					method: "DELETE",
-					headers: {
-						"Content-Type": "application/json"
-					},
-					redirect: "follow"
-				}).then(response => {
-					window.location.reload();
-				});
+			for (var i = 0; i < cbs.length; i++)
+			{
+				if (cbs[i].checked)
+				{
+					// Show loading spinner
+					delBtn.classList.add('is-loading');
+					
+					var id = cbs[i].value;
+
+					fetch("https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af/urls/" + id, {
+						method: "DELETE",
+						headers: {
+							"Content-Type": "application/json"
+						},
+						redirect: "follow"
+					}).then(response => {
+						window.location.reload();
+					});
+				}
 			}
 		}
-	}
 
-	function registerAsAdmin()
-	{
-		document.cookie = 'PBZ-ADMIN; expires=Wed, 1 Jan 2025 12:00:00 UTC';
-	}
-</script>
+		function registerAsAdmin()
+		{
+			document.cookie = 'PBZ-ADMIN; expires=Wed, 1 Jan 2025 12:00:00 UTC';
+		}
 
-<section class=section>
-	<h1 class=title>PBZ-URL Admin Interface</h1>
-	<h2 class=subtitle>View stored URLs and decide which ones to keep or discard.</h1>
-	<button
-		class=button
-		onmouseenter="this.classList.add('has-text-link')"
-		onmouseleave="this.classList.remove('has-text-link')"
-		onclick="window.location=('/')">
-		<span class="icon is-small" >
-			<i class="fas fa-arrow-left"></i>
-		</span>
-	</button>
-	<button class="button" onclick="registerAsAdmin()">Register Computer As Admin</button>
-	<button class="button is-warning" onclick="deleteSelected()" id=delete-button>Delete Selected</button>
-</section>
+		function checkResetIds()
+		{
+			var cbs = document.getElementsByName('delete-me');
+			if (cbs.length == 0)
+			{
+				var delBtn = document.getElementById('reset-ids').disabled = false;
+			}
+		}
+
+		function resetIds()
+		{
+			fetch("https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af/count", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				redirect: "follow",
+				body: JSON.stringify({
+					value: 1
+				})
+			}).then(response => {
+				document.getElementById('reset-icon').style.display = 'inline-flex';
+			});
+		}
+	</script>
+</head>
+<body onload="checkResetIds()">
+	<section class=section>
+		<h1 class=title>PBZ-URL Admin Interface</h1>
+		<h2 class=subtitle>View stored URLs and decide which ones to keep or discard.</h1>
+		<button
+			class=button
+			onmouseenter="this.classList.add('has-text-link')"
+			onmouseleave="this.classList.remove('has-text-link')"
+			onclick="window.location=('/')">
+			<span class="icon is-small" >
+				<i class="fas fa-arrow-left"></i>
+			</span>
+		</button>
+		<button class="button" onclick="registerAsAdmin()">Register Computer As Admin</button>
+		<button class="button is-warning" onclick="deleteSelected()" id=delete-button>Delete Selected</button>
+		<button class="button is-danger" onclick="resetIds()" id=reset-ids title="Delete all stored links to reset ID count to 1." disabled>
+			<span id=reset-icon class="icon is-small" style="display: none">
+				<i class="fas fa-check"></i>
+			</span>
+			<span>Reset ID Count</span>
+		</button>
+	</section>
 
 
-<section class=section style="overflow-x: auto">
-	<table class="table">
-		<thead>
-			<tr>
-				<th>Delete</th>
-				<th>ID</th>
-				<th>URL</th>
-			</tr>
-		</thead>
-		<tbody id=table-body>
-			{% for id in json %}
-			<tr>
-				<th>
-					<label class=checkbox>
-						<input type=checkbox name=delete-me value="{{ id }}">
-					</label>
-				</th>
-				<td>{{ id }}</td>
-				<td>
-					<a href="{{ id }}">{{ json[id] }}</a>
-				</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</section>
+	<section class=section style="overflow-x: auto">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Delete</th>
+					<th>ID</th>
+					<th>URL</th>
+				</tr>
+			</thead>
+			<tbody id=table-body>
+				{% for id in json %}
+				<tr>
+					<th>
+						<label class=checkbox>
+							<input type=checkbox name=delete-me value="{{ id }}">
+						</label>
+					</th>
+					<td>{{ id }}</td>
+					<td>
+						<a href="{{ id }}">{{ json[id] }}</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
 
-<footer class=footer>
-	<div class="content has-text-centered">
-		<p class=has-text-danger>
-			<small>This page uses cookies. By continuing to use this page, you are agreeing to the use of cookies.</small>
-		</p>
-	</div>
-</footer>
+	<footer class=footer>
+		<div class="content has-text-centered">
+			<p class=has-text-danger>
+				<small>This page uses cookies. By continuing to use this page, you are agreeing to the use of cookies.</small>
+			</p>
+		</div>
+	</footer>
+</h2>

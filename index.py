@@ -89,9 +89,11 @@ def admin_page():
 	print('[CONCISE][admin_page()]')
 
 	try:
-		json = requests.get(f'{DATABASE_URL}/urls').json()['result']
-		json = { i : json[i]['value'] for i in json }
-		print(json)
+		try:
+			json = requests.get(f'{DATABASE_URL}/urls').json()['result']
+			json = { i : json[i]['value'] for i in json }
+		except:
+			json = dict()
 		return render_template('admin.html', json=json)
 	except Exception as e:
 		print(e)
