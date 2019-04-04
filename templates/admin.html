@@ -5,6 +5,7 @@
 <script>
 	function deleteSelected()
 	{
+		document.getElementById('delete-button').classList.add('is-loading');
 		var cbs = document.getElementsByName('delete-me');
 		for (var i = 0; i < cbs.length; i++)
 		{
@@ -30,7 +31,7 @@
 	<h1 class=title>PBZ.URL Admin Interface</h1>
 	<h2 class=subtitle>View stored URLs and decide which ones to keep or discard.</h1>
 
-	<button class=button onclick="deleteSelected()">Delete Selected</button>
+	<button class="button is-warning" onclick="deleteSelected()" id=delete-button>Delete Selected</button>
 </section>
 
 
