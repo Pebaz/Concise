@@ -91,7 +91,7 @@ def admin_page():
 	try:
 		try:
 			json = requests.get(f'{DATABASE_URL}/urls').json()['result']
-			json = { i : json[i]['value'] for i in json }
+			json = { i : json[i]['value'] for i in json if i != 'zero' }
 		except:
 			json = dict()
 		return render_template('admin.html', json=json)
