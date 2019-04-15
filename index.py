@@ -127,7 +127,7 @@ def admin_page():
 @app.route('/clearcache')
 def clear_cache():
 	cached_urls.clear()
-	return ""
+	return "OK"
 
 
 if __name__ == '__main__':
