@@ -18,3 +18,9 @@ An URL-shortener built using:
 https://pbz-url.herokuapp.com
 ```
 
+
+
+### Features
+
+* Shorten super long URLs.
+* Generate QR code for generated URL.
