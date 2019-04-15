@@ -71,7 +71,7 @@
 							shortenedUrl.value = host + result.urlid;
 
 							var qrCode = document.getElementById("qr-code");
-							qrCode.src = host + "qr/" + result.urlid;
+							qrCode.src = "//pbz-url.herokuapp.com/qr/" + result.urlid;
 							document.getElementById("qr-code-box").style.display = "inline-flex";
 							document.getElementById("qr-code-href").href = shortenedUrl.value
 						}
