@@ -43,8 +43,6 @@ def shorten_url():
 		requests.put(f'{DATABASE_URL}/count', json={ 'value' : new_id })
 		new_id = hex(new_id)[2:]
 
-		print(f'Got new ID: {new_id}')
-
 		# Store the URL
 		requests.post(f'{DATABASE_URL}/urls/{new_id}', json={ 'value' : the_url })
 
@@ -76,7 +74,7 @@ def get_url(id):
 		print(f'REDIRECTING TO: {url}')
 		return redirect(url, code=302)
 	except Exception as e:
-		print(e)
+		traceback.print_exc()
 		abort(404)
 
 
@@ -122,9 +120,14 @@ def admin_page():
 			json = dict()
 		return render_template('admin.html', json=json)
 	except Exception as e:
-		print(e)
+		traceback.print_exc()
 		abort(404)
 		
+
+@app.route('/clearcache')
+def clear_cache():
+	cached_urls.clear()
+
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 9001))
