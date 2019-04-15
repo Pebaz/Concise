@@ -66,10 +66,12 @@
 							shortenedUrl.classList.add("is-primary");
 							document.getElementById("done-icon").style.display = "inline-flex";
 
-							shortenedUrl.value = "https://pbz-url.herokuapp.com/" + result.urlid;
+							var host = "https://pbz-url.herokuapp.com/";
+
+							shortenedUrl.value = host + result.urlid;
 
 							var qrCode = document.getElementById("qr-code");
-							qrCode.src = "/qr/" + result.urlid;
+							qrCode.src = host + "qr/" + result.urlid;
 							document.getElementById("qr-code-box").style.display = "inline-flex";
 							document.getElementById("qr-code-href").href = shortenedUrl.value
 						}
