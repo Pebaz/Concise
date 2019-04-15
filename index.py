@@ -8,9 +8,10 @@
 [✔] Allow redirecting using IDs
 """
 
-import sys, os, time
+import sys, os, time, io, traceback
 import requests
-from flask import Flask, redirect, render_template, request, abort
+from flask import Flask, redirect, render_template, request, abort, send_file
+import qrcode
 
 ctm = lambda: int(round(time.time() * 1000))
 
@@ -59,7 +60,7 @@ def get_url(id):
 
 	POST a new URL to shorten.
 	"""
-	print('[CONCISE][get_url()]')
+	print(f'[CONCISE][get_url({id})]')
 
 	try:
 		start = ctm()
@@ -77,8 +78,33 @@ def get_url(id):
 	except Exception as e:
 		print(e)
 		abort(404)
-	
+
+
+@app.route('/qr/<id>')
+def get_qr(id):
+	"""
+	Generate a QR code image for a given URL id.
+	"""
+	print(f'[CONCISE][get_qr({id})]')
+
+	try:
+		# Generate the QR code and send it as a file
+		start = ctm()
+		url = f'https://pbz-url.herokuapp.com/{id}'
+		qr = qrcode.make(url, box_size=5, border=2)
+		in_mem_file = io.BytesIO()
+		qr.save(in_mem_file, 'JPEG', quality=100)
+		in_mem_file.seek(0)
+
+		print(f'Delay: {ctm() - start} ms')
+
+		return send_file(in_mem_file, mimetype='image/jpeg')
+
+	except Exception as e:
+		traceback.print_exc()
+		abort(404)
 		
+
 @app.route('/admin')
 def admin_page():
 	"""
@@ -99,7 +125,6 @@ def admin_page():
 		print(e)
 		abort(404)
 		
-
 
 if __name__ == '__main__':
 	port = int(os.environ.get('PORT', 9001))

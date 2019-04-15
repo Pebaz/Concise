@@ -67,6 +67,11 @@
 							document.getElementById("done-icon").style.display = "inline-flex";
 
 							shortenedUrl.value = "https://pbz-url.herokuapp.com/" + result.urlid;
+
+							var qrCode = document.getElementById("qr-code");
+							qrCode.src = "/qr/" + result.urlid;
+							document.getElementById("qr-code-box").style.display = "inline-flex";
+							document.getElementById("qr-code-href").href = shortenedUrl.value
 						}
 
 						shortButton.classList.remove("is-loading");
@@ -88,13 +93,15 @@
 				document.getElementById("done-icon").style.display = "none";
 				document.getElementById("error-icon").style.display = "none";
 				shortenedUrl.classList.remove("is-primary");
+				var shortButton = document.getElementById("shorten");
+				shortButton.classList.remove("is-loading");
 			}
 
 			function checkAdmin()
 			{
 				if (document.cookie.split(';')[0] === 'PBZ-ADMIN')
 				{
-					document.getElementById('admin-icon').style.display = 'inline-flex';
+					document.getElementById('admin-icon').style.display = "inline-flex";
 				}
 			}
 		</script>
@@ -115,7 +122,20 @@
 
 		<section class=section>
 			<div class=container>
-				<h1 class=title>Concise</h1>
+				<div class=level>
+					<div class=level-left>
+						<div class=level-item>
+							<div id=qr-code-box class="animated fadeIn zoomInLeft image is-128x128" style="display: none">
+								<a id=qr-code-href>
+									<img id=qr-code />
+								</a>
+							</div>
+						</div>
+						<div class=level-item>
+							<h1 class=title>Concise</h1>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class=container>
 				<h2 class=subtitle>
@@ -127,10 +147,10 @@
 		<section>
 			<div class=container>
 				<div class="columns is-multiline">
-					<div class="column">
+					<div class=column>
 						<div class=field>
 							<div class="control has-icons-right">
-								<input id=the-url class="input" type=text placeholder=http://super.long.url>
+								<input id=the-url class=input type=text placeholder=http://super.long.url>
 								<span id=done-icon class="icon is-small is-right has-text-success" style="display: none">
 									<!-- <i class="fas fa-spinner fa-pulse"></i> -->
 									<i class="fas fa-check-square"></i>
@@ -143,7 +163,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="column">
+					<div class=column>
 						<a id=shorten onclick="shorten()" class="button is-primary">Shorten</a>
 						<a onclick="copy()" class="button">Copy</a>
 						<a onclick="clearURL()" class="button is-warning">Clear</a>
