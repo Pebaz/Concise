@@ -3,3 +3,4 @@ requests
 bjoern
 jinja2>=2.10.1
 qrcode
+pillow
