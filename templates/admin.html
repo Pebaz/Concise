@@ -59,6 +59,10 @@
 			}).then(response => {
 				document.getElementById('reset-icon').style.display = 'inline-flex';
 			});
+
+			fetch("//pbz-url.herokuapp.com/clearcache", {
+				method: "GET",
+			}).then(response => {});
 		}
 	</script>
 </head>
