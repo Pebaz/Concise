@@ -15,7 +15,7 @@
 </div>
 
 
-<img src=misc/EditorScreenshot.png />
+<img src="misc/shot.png" />
 
 ### Quickstart
 
