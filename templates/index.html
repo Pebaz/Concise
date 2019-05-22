@@ -65,16 +65,10 @@
 							shortenedUrl.classList.remove("is-danger", "is-info");
 							shortenedUrl.classList.add("is-primary");
 							document.getElementById("done-icon").style.display = "inline-flex";
-
-							//var host = "https://pbz-url.herokuapp.com/";
 							var host = `${window.location.protocol}//${result.host}`;
-
 							shortenedUrl.value = `${host}/${result.urlid}`;
-
 							var qrCode = document.getElementById("qr-code");
-							//qrCode.src = "//pbz-url.herokuapp.com/qr/" + result.urlid;
 							qrCode.src = `${host}/qr/${result.urlid}`;
-							
 							document.getElementById("qr-code-box").style.display = "inline-flex";
 							document.getElementById("qr-code-href").href = shortenedUrl.value
 						}
