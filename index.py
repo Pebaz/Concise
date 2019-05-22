@@ -15,9 +15,11 @@ import qrcode
 
 ctm = lambda: int(round(time.time() * 1000))
 
-
 app = Flask(__name__)
 DATABASE_URL = "https://www.jsonstore.io/e9e6153838f3d04ea2843901197e19bcaf72f63a97ec0e26d88c5d1178ac22af"
+DATABASE_URL = os.environ.get('DATABASE_URL', None)
+HOST = f'{os.environ.get("host", "localhost:9001")}'
+
 cached_urls = dict()
 
 
@@ -27,12 +29,18 @@ def shorten_url():
 	Index page to turn a URL into a smaller URL.
 	"""
 
+
 	print('[CONCISE][shorten_url()]')
 
 	if request.method == 'GET':
+		if not DATABASE_URL:
+			return f'Error: <b>DATABASE_URL</b> environment variable not set.'
 		return render_template('index.html')
 
 	elif request.method == 'POST':
+		if not DATABASE_URL:
+			abort(404)
+
 		data = request.get_json()
 		the_url = data["the-url"]
 		print(f'Going to shorten: {the_url}')
@@ -48,7 +56,7 @@ def shorten_url():
 
 		# Return the ID
 
-		return f'{{"result":"ok", "urlid":"{new_id}"}}'
+		return f'{{"result":"ok", "urlid":"{new_id}", "host":"{HOST}"}}'
 
 
 @app.route('/<id>')
@@ -73,6 +81,7 @@ def get_url(id):
 
 		print(f'REDIRECTING TO: {url}')
 		return redirect(url, code=302)
+
 	except Exception as e:
 		traceback.print_exc()
 		abort(404)
@@ -88,7 +97,7 @@ def get_qr(id):
 	try:
 		# Generate the QR code and send it as a file
 		start = ctm()
-		url = f'https://pbz-url.herokuapp.com/{id}'
+		url = f'https://{HOST}/{id}'
 		qr = qrcode.make(url, box_size=5, border=2)
 		in_mem_file = io.BytesIO()
 		qr.save(in_mem_file, 'JPEG', quality=100)
